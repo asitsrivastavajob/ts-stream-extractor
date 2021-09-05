@@ -6,7 +6,8 @@
 #include <queue>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <sys/resource.h>
+//#include <sys/resource.h>
+#include "TSParser.h"
 
 using namespace std;
 
@@ -17,6 +18,7 @@ using namespace std;
 #define SRC_ADDR            "127.0.0.1"
 #define PORT_NO             5000
 #define MAX_QUEUE_SIZE      20;
+
 
 mutex m;
 condition_variable cv;
@@ -64,18 +66,12 @@ int openSocket(const std::string& IpAddress, int Port)
     return 0;
 }
 
-void parse_Buffer(ReceiveBufferArray& _buff)
+void parse_Buffer(ReceiveBufferArray& _buff, int _consumed_pkt_cnt)
 {
-    unsigned short pid = 0;
-    if(_buff.buf[28] == 0x47)
-    {
-        pid = ((_buff.buf[29] & 0x1f) << 8) | _buff.buf[30];
-        cout<<"PID = "<<pid<<endl;
-        if(pid == PAT_PID)
-        {
-            cout<<"PAT PID FOUND"<<endl;
-        }
-    }
+    TSPacket tPkt;
+    TSParser parser;
+    int ret = tPkt.Parse(_buff.buf + 28 , TS_PKT_LEN);
+    parser.PrintPacketInfo(tPkt, 0, g_consumed_pkt_cnt);
 }
 
 
@@ -95,8 +91,8 @@ void consumer_thread()
             cv.notify_one();
         }
 
-        parse_Buffer(temp_rbuf);
-        std::cout << " Produced Packet no : "<< g_produced_pkt_cnt << ", consumed Packet no : "<< g_consumed_pkt_cnt <<endl;
+        parse_Buffer(temp_rbuf,g_consumed_pkt_cnt);
+        //std::cout << " Produced Packet no : "<< g_produced_pkt_cnt << ", consumed Packet no : "<< g_consumed_pkt_cnt <<endl;
         //usleep(1);
 
         //if(g_consumed_pkt_cnt == g_produced_pkt_cnt)
@@ -125,7 +121,7 @@ void producer_thread()
             cv.notify_one();
         }
 
-        std::cout << "Packet Size : " << packet_size << ", Produced Packet no : "<< g_produced_pkt_cnt << ", consumed Packet no : "<< g_consumed_pkt_cnt <<endl;
+        //std::cout << "Packet Size : " << packet_size << ", Produced Packet no : "<< g_produced_pkt_cnt << ", consumed Packet no : "<< g_consumed_pkt_cnt <<endl;
     }
     std::cout << "PRODUCER DONE" << endl;
 }
