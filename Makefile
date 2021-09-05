@@ -10,7 +10,7 @@ LDFLAGS = -pthread
 # Makefile settings - Can be customized.
 APPNAME = TS-Extractor
 EXT = .cpp
-SRCDIR = /home/asit/Desktop/TS-Extractor
+SRCDIR = /home/asit/Desktop/ts-stream-extractor
 OBJDIR = obj
 
 ############## Do not change anything from here downwards! #############
