@@ -2,9 +2,7 @@
 1.Build command
 ===================
 
-* Open makefile and modify SRCDIR to current path 
-
-e.g SRCDIR = /home/asit/Desktop/TS-Extractor
+* Open makefile and modify SRCDIR to current path  (  e.g SRCDIR = /home/asit/Desktop/TS-Extractor  )
 
 * make
 
