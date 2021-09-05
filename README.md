@@ -11,11 +11,11 @@ e.g SRCDIR = /home/asit/Desktop/TS-Extractor
 2.Commands to run :
 ==================
 
-install ffmpeg 
+* install ffmpeg 
 
-ffmpeg -re -i ed24p_00.ts -c:v copy -c:a copy -f mpegts udp://127.0.0.1:5000?pkt_size=188
+* ffmpeg -re -i ed24p_00.ts -c:v copy -c:a copy -f mpegts udp://127.0.0.1:5000?pkt_size=188
 
-sudo ./TS-Extractor
+* sudo ./TS-Extractor
 
 3.Command to run stream repeatedly :
 ==================================
