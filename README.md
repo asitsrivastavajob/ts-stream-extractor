@@ -11,6 +11,8 @@ e.g SRCDIR = /home/asit/Desktop/TS-Extractor
 2.Commands to run :
 ==================
 
+install ffmpeg 
+
 ffmpeg -re -i ed24p_00.ts -c:v copy -c:a copy -f mpegts udp://127.0.0.1:5000?pkt_size=188
 
 sudo ./TS-Extractor
