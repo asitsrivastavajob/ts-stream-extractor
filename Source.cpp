@@ -27,6 +27,9 @@ int g_consumed_pkt_cnt = 0;
 int g_produced_pkt_cnt = 0;
 bool is_transmission_continue = true;
 
+//IP packets contain IP header , udp header and TS packet 
+//Created a buffer considering these , Ip header varies from 20 to max 60 bytes. 
+//i am considering it 20 bytes. 
 struct ReceiveBufferArray {
     uint8_t buf[TS_PACKET_SIZE + IP_HEADER_SIZE + UDP_HEADER_SIZE];
 };
@@ -40,6 +43,7 @@ struct sockaddr_in gmServerAddr;
 
 socklen_t gmClientLen = sizeof(gmServerAddr);
 
+//Creating a socket to listen the udp stream at particular PORT_NO
 int openSocket(const std::string& IpAddress, int Port)
 {
     //struct timeval timeout;
@@ -66,6 +70,8 @@ int openSocket(const std::string& IpAddress, int Port)
     return 0;
 }
 
+//function handling TS packet parsing 
+//Note : Using TSParser class (TSparser.cpp/.h) , this is not my implementation , i took it from github 
 void parse_Buffer(ReceiveBufferArray& _buff, int _consumed_pkt_cnt)
 {
     TSPacket tPkt;
@@ -74,7 +80,9 @@ void parse_Buffer(ReceiveBufferArray& _buff, int _consumed_pkt_cnt)
     parser.PrintPacketInfo(tPkt, 0, g_consumed_pkt_cnt);
 }
 
-
+//Implemented producer consumer functionality in consumer_thraed() and producer_thread()
+//Producer_thread puts data to global queue of type ReceiveBufferArray and 
+//consumer_thread() consumes qq queue
 void consumer_thread()
 {
     ReceiveBufferArray temp_rbuf;
@@ -103,6 +111,8 @@ void consumer_thread()
 
 }
 
+//producer_thread() function receives data in _rbuf from recvfrom function and i pass 
+//the data in global variable qq , which is a queue of type  ReceiveBufferArray
 void producer_thread()
 {
     openSocket(SRC_ADDR, PORT_NO);
